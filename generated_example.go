@@ -56,30 +56,14 @@ Beginning of "Hardcoded Well-known Errors" section
 
 */
 
-var errUnknown = ApiError{
-	HTTPStatus: http.StatusNotFound,
-	Err:        errors.New("unknown method"),
-}
+var (
+	errUnknown      = ApiError{HTTPStatus: http.StatusNotFound, Err: errors.New("unknown method")}
+	errBadMethod    = ApiError{HTTPStatus: http.StatusNotAcceptable, Err: errors.New("bad method")}
+	errEmptyLogin   = ApiError{HTTPStatus: http.StatusBadRequest, Err: errors.New("login must me not empty")}
+	errBadUser      = ApiError{HTTPStatus: http.StatusInternalServerError, Err: errors.New("bad user")}
+	errUnauthorized = ApiError{HTTPStatus: http.StatusForbidden, Err: errors.New("unauthorized")}
+)
 
-var errBadMethod = ApiError{
-	HTTPStatus: http.StatusNotAcceptable,
-	Err:        errors.New("bad method"),
-}
-
-var errEmptyLogin = ApiError{
-	HTTPStatus: http.StatusBadRequest,
-	Err:        errors.New("login must me not empty"),
-}
-
-var errBadUser = ApiError{
-	HTTPStatus: http.StatusInternalServerError,
-	Err:        errors.New("bad user"),
-}
-
-var errUnauthorized = ApiError{
-	HTTPStatus: http.StatusForbidden,
-	Err:        errors.New("unauthorized"),
-}
 
 /*
 
@@ -174,7 +158,7 @@ func (srv *MyApi) create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !(len(login) > 10) {
+	if len(login) < 10 {
 		NewApiError("login len must be >= 10", http.StatusBadRequest).serve(w)
 		return
 	}
@@ -206,12 +190,12 @@ func (srv *MyApi) create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !(age >= 0) {
+	if age < 0 {
 		NewApiError("age must be >= 0", http.StatusBadRequest).serve(w)
 		return
 	}
 
-	if !(age <= 128) {
+	if age > 128 {
 		NewApiError("age must be <= 128", http.StatusBadRequest).serve(w)
 		return
 	}
