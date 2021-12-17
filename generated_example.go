@@ -165,8 +165,8 @@ func (srv *MyApi) create(w http.ResponseWriter, r *http.Request) {
 
 	name := r.Form.Get("name")
 	full_name := r.Form.Get("full_name")
-	if full_name == "" {
-		full_name = strings.ToLower(name)
+	if full_name != "" {
+		name = full_name
 	}
 
 	status := r.Form.Get("status")
@@ -202,7 +202,7 @@ func (srv *MyApi) create(w http.ResponseWriter, r *http.Request) {
 
 	createParams := CreateParams{
 		Login:  login,
-		Name:   full_name,
+		Name:   name,
 		Status: status,
 		Age:    age,
 	}
